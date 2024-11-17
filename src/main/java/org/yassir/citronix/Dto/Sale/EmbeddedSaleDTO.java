@@ -4,7 +4,8 @@ import java.time.LocalDate;
 
 public record EmbeddedSaleDTO(
          Long id,
-
-         LocalDate plantingDate
+         LocalDate saleDate,
+         String clientName,
+         double unitPrice
 ) {
 }

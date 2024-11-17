@@ -5,7 +5,9 @@ import java.time.LocalDate;
 public record SaleRequestDTO(
 
 
-         LocalDate plantingDate,
+         LocalDate saleDate,
+         String clientName,
+         double unitPrice,
          Long harvestId
 ) {
 }
