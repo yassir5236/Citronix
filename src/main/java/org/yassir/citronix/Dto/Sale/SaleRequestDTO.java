@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public record SaleRequestDTO(
 
 
-         LocalDate plantingDate
+         LocalDate plantingDate,
+         Long harvestId
 ) {
 }

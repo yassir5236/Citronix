@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.yassir.citronix.Dto.Sale.SaleRequestDTO;
 import org.yassir.citronix.Dto.Sale.SaleResponseDTO;
 import org.yassir.citronix.Mapper.ISaleMapper;
+import org.yassir.citronix.Model.Entity.Harvest;
 import org.yassir.citronix.Model.Entity.Sale;
+import org.yassir.citronix.Repository.HarvestRepository;
 import org.yassir.citronix.Repository.SaleRepository;
 import org.yassir.citronix.Service.ISaleService;
 
@@ -18,20 +20,27 @@ public class SaleServiceImp implements ISaleService {
 
     private final SaleRepository saleRepository;
     private final ISaleMapper saleMapper;
+    private final HarvestRepository harvestRepository;
 
 
     @Autowired
-    public SaleServiceImp(SaleRepository saleRepository, ISaleMapper saleMapper) {
+    public SaleServiceImp(SaleRepository saleRepository, ISaleMapper saleMapper, HarvestRepository harvestRepository) {
         this.saleRepository = saleRepository;
         this.saleMapper = saleMapper;
-
+        this.harvestRepository = harvestRepository;
     }
 
 
 
     @Override
     public SaleResponseDTO createSale(SaleRequestDTO saleRequestDTO) {
+
         Sale sale = saleMapper.toEntity(saleRequestDTO);
+
+        Harvest harvest =harvestRepository.findById(saleRequestDTO.harvestId())
+                .orElseThrow(() -> new RuntimeException("Harvest not found"));
+
+        sale.setHarvest(harvest);
         Sale savedSale = saleRepository.save(sale);
         return saleMapper.toResponseDto(savedSale);
     }

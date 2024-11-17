@@ -9,6 +9,6 @@ public record FieldResponseDTO(
         String  name,
         double area ,
         LocalDate creationDate,
-        EmbeddedFarmDTO Farm
+        EmbeddedFarmDTO farm
 ) {
 }

@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 public record HarvestDetailRequestDTO(
 
-        double quantity
+        double quantity,
+        Long harvestId,
+        Long treeId
 ) {
 }

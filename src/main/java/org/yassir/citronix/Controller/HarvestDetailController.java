@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yassir.citronix.Dto.HarvestDetail.HarvestDetailRequestDTO;
 import org.yassir.citronix.Dto.HarvestDetail.HarvestDetailResponseDTO;
+import org.yassir.citronix.Embeddable.CompositeKey2;
 import org.yassir.citronix.Service.IHarvestDetailService;
 
 import java.util.List;
@@ -23,27 +24,36 @@ public class HarvestDetailController {
     }
 
     @PostMapping
-    public ResponseEntity<HarvestDetailResponseDTO> createHarvestDetail(@Valid @RequestBody HarvestDetailRequestDTO harvestDetailRequestDTO) {
+    public ResponseEntity<HarvestDetailResponseDTO> createHarvestDetail(
+            @Valid @RequestBody HarvestDetailRequestDTO harvestDetailRequestDTO) {
         HarvestDetailResponseDTO createdHarvestDetail = harvestDetailService.createHarvestDetail(harvestDetailRequestDTO);
         return new ResponseEntity<>(createdHarvestDetail, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<HarvestDetailResponseDTO> getHarvestDetailById(@PathVariable Long id) {
+    @GetMapping("/{treeId}/{harvestId}")
+    public ResponseEntity<HarvestDetailResponseDTO> getHarvestDetailById(
+            @PathVariable Long treeId,
+            @PathVariable Long harvestId) {
+        CompositeKey2 id = new CompositeKey2(treeId, harvestId);
         HarvestDetailResponseDTO harvestDetail = harvestDetailService.getHarvestDetailById(id);
         return ResponseEntity.ok(harvestDetail);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{treeId}/{harvestId}")
     public ResponseEntity<HarvestDetailResponseDTO> updateHarvestDetail(
-            @PathVariable Long id,
+            @PathVariable Long treeId,
+            @PathVariable Long harvestId,
             @Valid @RequestBody HarvestDetailRequestDTO harvestDetailRequestDTO) {
+        CompositeKey2 id = new CompositeKey2(treeId, harvestId);
         HarvestDetailResponseDTO updatedHarvestDetail = harvestDetailService.updateHarvestDetail(id, harvestDetailRequestDTO);
         return ResponseEntity.ok(updatedHarvestDetail);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHarvestDetail(@PathVariable Long id) {
+    @DeleteMapping("/{treeId}/{harvestId}")
+    public ResponseEntity<Void> deleteHarvestDetail(
+            @PathVariable Long treeId,
+            @PathVariable Long harvestId) {
+        CompositeKey2 id = new CompositeKey2(treeId, harvestId);
         harvestDetailService.deleteHarvestDetail(id);
         return ResponseEntity.noContent().build();
     }
@@ -53,8 +63,4 @@ public class HarvestDetailController {
         List<HarvestDetailResponseDTO> harvestDetails = harvestDetailService.getAllHarvestDetails();
         return ResponseEntity.ok(harvestDetails);
     }
-
-
-
-
 }

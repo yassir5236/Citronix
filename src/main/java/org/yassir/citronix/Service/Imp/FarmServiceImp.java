@@ -37,6 +37,7 @@ public class FarmServiceImp implements IFarmService {
     }
 
 
+
     @Override
     public FarmResponseDTO getFarmById(Long farmId) {
         Farm farm = farmRepository.findById(farmId)
