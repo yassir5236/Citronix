@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.yassir.citronix.Dto.Field.FieldRequestDTO;
 import org.yassir.citronix.Dto.Field.FieldResponseDTO;
 import org.yassir.citronix.Mapper.IFieldMapper;
+import org.yassir.citronix.Model.Entity.Farm;
 import org.yassir.citronix.Model.Entity.Field;
+import org.yassir.citronix.Repository.FarmRepository;
 import org.yassir.citronix.Repository.FieldRepository;
 import org.yassir.citronix.Service.IFieldService;
 
@@ -16,23 +18,28 @@ import java.util.stream.Collectors;
 public class FieldServiceImp implements IFieldService {
 
 
-
     private final FieldRepository fieldRepository;
     private final IFieldMapper fieldMapper;
+    private final FarmRepository farmRepository;
 
 
     @Autowired
-    public FieldServiceImp(FieldRepository fieldRepository, IFieldMapper fieldMapper) {
+    public FieldServiceImp(FieldRepository fieldRepository, IFieldMapper fieldMapper, FarmRepository farmRepository) {
         this.fieldRepository = fieldRepository;
         this.fieldMapper = fieldMapper;
+        this.farmRepository = farmRepository;
 
     }
-
 
 
     @Override
     public FieldResponseDTO createField(FieldRequestDTO fieldRequestDTO) {
         Field field = fieldMapper.toEntity(fieldRequestDTO);
+
+        Farm farm = farmRepository.findById(fieldRequestDTO.farmId())
+                .orElseThrow(() -> new IllegalArgumentException("Farm not found"));
+
+        field.setFarm(farm);
         Field savedField = fieldRepository.save(field);
         return fieldMapper.toResponseDto(savedField);
     }
@@ -62,7 +69,6 @@ public class FieldServiceImp implements IFieldService {
                 .map(fieldMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
-
 
 
     @Override
