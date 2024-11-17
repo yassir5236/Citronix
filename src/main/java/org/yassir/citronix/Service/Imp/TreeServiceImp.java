@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.yassir.citronix.Dto.Tree.TreeRequestDTO;
 import org.yassir.citronix.Dto.Tree.TreeResponseDTO;
 import org.yassir.citronix.Mapper.ITreeMapper;
+import org.yassir.citronix.Model.Entity.Field;
 import org.yassir.citronix.Model.Entity.Tree;
+import org.yassir.citronix.Repository.FieldRepository;
 import org.yassir.citronix.Repository.TreeRepository;
 import org.yassir.citronix.Service.ITreeService;
 
@@ -17,13 +19,14 @@ public class TreeServiceImp implements ITreeService {
 
     private final TreeRepository treeRepository;
     private final ITreeMapper treeMapper;
+    private final FieldRepository fieldRepository;
 
 
     @Autowired
-    public TreeServiceImp(TreeRepository treeRepository, ITreeMapper treeMapper) {
+    public TreeServiceImp(TreeRepository treeRepository, ITreeMapper treeMapper, FieldRepository fieldRepository) {
         this.treeRepository = treeRepository;
         this.treeMapper = treeMapper;
-
+        this.fieldRepository = fieldRepository;
     }
 
 
@@ -31,6 +34,10 @@ public class TreeServiceImp implements ITreeService {
     @Override
     public TreeResponseDTO createTree(TreeRequestDTO treeRequestDTO) {
         Tree tree = treeMapper.toEntity(treeRequestDTO);
+        Field field =fieldRepository.findById(treeRequestDTO.fieldId())
+                .orElseThrow(()->new IllegalArgumentException("Field not found"));
+
+        tree.setField(field);
         Tree savedTree = treeRepository.save(tree);
         return treeMapper.toResponseDto(savedTree);
     }

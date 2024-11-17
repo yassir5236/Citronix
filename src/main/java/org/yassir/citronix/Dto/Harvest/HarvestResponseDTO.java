@@ -11,8 +11,7 @@ public record HarvestResponseDTO(
 
         LocalDate harvestDate,
 
-        Season season,
-        List<EmbeddedTreeDTO> trees,
-        List<EmbeddedHarvestdDTO> harvests
+        Season season
+
 ) {
 }

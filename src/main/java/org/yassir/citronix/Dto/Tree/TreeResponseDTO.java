@@ -1,6 +1,7 @@
 package org.yassir.citronix.Dto.Tree;
 
 import org.yassir.citronix.Dto.Field.EmbeddedFieldDTO;
+import org.yassir.citronix.Dto.Field.FieldResponseDTO;
 import org.yassir.citronix.Dto.HarvestDetail.EmbeddedHarvestDetailDTO;
 import org.yassir.citronix.Dto.HarvestDetail.HarvestDetailResponseDTO;
 
@@ -12,7 +13,10 @@ public record TreeResponseDTO(
 
         LocalDate plantingDate,
 
-        EmbeddedFieldDTO field,
+//        EmbeddedFieldDTO field,
+        FieldResponseDTO field,
+
         List<EmbeddedHarvestDetailDTO> harvestDetails
+
         ) {
 }
