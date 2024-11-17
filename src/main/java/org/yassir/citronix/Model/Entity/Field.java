@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 
 @Entity
-@Table(name = "Farms")
+@Table(name = "Fields")
 public class Field {
 
     @Id

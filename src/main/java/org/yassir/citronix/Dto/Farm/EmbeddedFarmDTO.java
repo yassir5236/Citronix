@@ -1,6 +1,13 @@
 package org.yassir.citronix.Dto.Farm;
 
-public record EmbeddedFarmDTO(
+import java.time.LocalDate;
 
+public record EmbeddedFarmDTO(
+         Long id,
+
+         String name,
+         String location,
+         double totalArea ,
+         LocalDate created
 ) {
 }

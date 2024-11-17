@@ -22,10 +22,13 @@ public class Sale {
     private Long id;
     private double unitPrice;
     private LocalDate saleDate;
+    private String clientName;
+
+
 
     @ManyToOne
-    @MapsId("HarvestId")
-    @JoinColumn(name = "Harvest_id")
+//    @MapsId("harvestId")
+    @JoinColumn(name = "harvest_id")
     private Harvest harvest;
 
 }

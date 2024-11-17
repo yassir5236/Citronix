@@ -26,7 +26,7 @@ public class Tree {
     private LocalDate plantingDate;
 
     @ManyToOne
-    @MapsId("fieldId")
+//    @MapsId("fieldId")
     @JoinColumn(name = "field_id")
     private Field field;
 
