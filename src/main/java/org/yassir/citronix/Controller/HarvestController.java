@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yassir.citronix.Dto.Harvest.HarvestRequestDTO;
 import org.yassir.citronix.Dto.Harvest.HarvestResponseDTO;
+import org.yassir.citronix.Embeddable.CompositeKey2;
 import org.yassir.citronix.Service.IHarvestService;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class HarvestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HarvestResponseDTO> getHarvestById(@PathVariable Long id) {
-        HarvestResponseDTO harvest = harvestService.getHarvestById(id);
+    public ResponseEntity<HarvestResponseDTO> getHarvestById(@PathVariable CompositeKey2 c) {
+        HarvestResponseDTO harvest = harvestService.getHarvestById(CompositeKey2);
         return ResponseEntity.ok(harvest);
     }
 
