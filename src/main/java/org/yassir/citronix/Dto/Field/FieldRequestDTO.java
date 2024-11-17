@@ -6,6 +6,7 @@ public record FieldRequestDTO(
 
         String  name,
         double area ,
-        LocalDate creationDate
+        LocalDate creationDate,
+        Long FarmId
 ) {
 }
