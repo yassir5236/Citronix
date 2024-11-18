@@ -39,6 +39,11 @@ public class FieldServiceImp implements IFieldService {
         Farm farm = farmRepository.findById(fieldRequestDTO.farmId())
                 .orElseThrow(() -> new IllegalArgumentException("Farm not found"));
 
+        if(farm.getFields().size()>=10){
+            throw new IllegalArgumentException("A farm cannot have more than 10 fields");
+        }
+
+
         field.setFarm(farm);
         Field savedField = fieldRepository.save(field);
         return fieldMapper.toResponseDto(savedField);
