@@ -11,8 +11,11 @@ import org.yassir.citronix.Repository.FarmRepository;
 import org.yassir.citronix.Repository.FieldRepository;
 import org.yassir.citronix.Service.IFieldService;
 
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.compare;
 
 @Service
 public class FieldServiceImp implements IFieldService {
@@ -38,6 +41,10 @@ public class FieldServiceImp implements IFieldService {
 
         Farm farm = farmRepository.findById(fieldRequestDTO.farmId())
                 .orElseThrow(() -> new IllegalArgumentException("Farm not found"));
+
+        if(field.getCreationDate().isBefore(farm.getCreated())){
+            throw new IllegalArgumentException("Field creation date cannot before the farm's creation date");
+        }
 
         if(farm.getFields().size()>=10){
             throw new IllegalArgumentException("A farm cannot have more than 10 fields");

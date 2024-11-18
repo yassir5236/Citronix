@@ -47,6 +47,10 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
 
+        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())){
+            throw new IllegalArgumentException("Harvest date  cannot before the tree's plantation date");
+        }
+
         harvestDetail.setHarvest(harvest);
         harvestDetail.setTree(tree);
 

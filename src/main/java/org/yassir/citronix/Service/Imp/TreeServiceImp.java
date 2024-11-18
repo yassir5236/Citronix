@@ -43,6 +43,10 @@ public class TreeServiceImp implements ITreeService {
         Field field =fieldRepository.findById(treeRequestDTO.fieldId())
                 .orElseThrow(()->new IllegalArgumentException("Field not found"));
 
+        if(tree.getPlantingDate().isBefore(field.getCreationDate())){
+            throw new IllegalArgumentException("Tree planting date cannot before the field's creation date");
+        }
+
         Month plantingMonth = tree.getPlantingDate().getMonth();
         if (plantingMonth.compareTo(Month.MARCH) < 0 || plantingMonth.compareTo(Month.MAY) > 0) {
             throw new IllegalArgumentException("Planting is only allowed between March and May.");
