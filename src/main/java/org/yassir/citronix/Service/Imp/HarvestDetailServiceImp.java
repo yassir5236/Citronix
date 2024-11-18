@@ -38,10 +38,6 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
     }
 
 
-
-
-
-
     @Override
     public HarvestDetailResponseDTO createHarvestDetail(HarvestDetailRequestDTO harvestDetailRequestDTO) {
         HarvestDetail harvestDetail = harvestDetailMapper.toEntity(harvestDetailRequestDTO);
@@ -56,6 +52,11 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
             throw new IllegalArgumentException("Harvest date cannot be before the tree's plantation date");
         }
 
+        if (isTreeHarvestedInSameSeason(tree, harvest)) {
+            throw new IllegalArgumentException("This tree has already been harvested in the same season.");
+        }
+
+
         if (isHarvestInSameSeasonForField(tree.getField(), harvest)) {
             throw new IllegalArgumentException("A harvest already exists for this field in the same season.");
         }
@@ -67,6 +68,8 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
         return harvestDetailMapper.toResponseDto(savedHarvestDetail);
     }
+
+
 
     private boolean isHarvestInSameSeasonForField(Field field, Harvest harvest) {
         List<Tree> trees = treeRepository.findByField(field);
@@ -84,10 +87,39 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         return false;
     }
 
+
+
     private boolean isSameSeason(Harvest harvest1, Harvest harvest2) {
-        return harvest1.getSeason() == harvest2.getSeason();
+        if (harvest1.getSeason() == harvest2.getSeason()) {
+            int year1 = harvest1.getHarvestDate().getYear();
+            int year2 = harvest2.getHarvestDate().getYear();
+
+            if (year1 != year2) {
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        return false;
     }
 
+
+
+
+    private boolean isTreeHarvestedInSameSeason(Tree tree, Harvest harvest) {
+        List<HarvestDetail> harvestDetails = harvestDetailRepository.findByTreeIn(List.of(tree));
+
+        for (HarvestDetail detail : harvestDetails) {
+            Harvest existingHarvest = detail.getHarvest();
+
+            if (isSameSeason(existingHarvest, harvest)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
 
