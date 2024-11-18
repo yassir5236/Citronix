@@ -38,27 +38,7 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
     }
 
 
-//    @Override
-//    public HarvestDetailResponseDTO createHarvestDetail(HarvestDetailRequestDTO harvestDetailRequestDTO) {
-//
-//        HarvestDetail harvestDetail = harvestDetailMapper.toEntity(harvestDetailRequestDTO);
-//
-//        Tree tree = treeRepository.findById(harvestDetailRequestDTO.treeId())
-//                .orElseThrow(() -> new IllegalArgumentException("Tree not found"));
-//
-//        Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
-//                .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
-//
-//        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())){
-//            throw new IllegalArgumentException("Harvest date  cannot before the tree's plantation date");
-//        }
-//
-//        harvestDetail.setHarvest(harvest);
-//        harvestDetail.setTree(tree);
-//
-//        HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
-//        return harvestDetailMapper.toResponseDto(savedHarvestDetail);
-//    }
+
 
 
 
