@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yassir.citronix.Model.Enum.TreeMaturity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,8 +26,13 @@ public class Tree {
 
     private LocalDate plantingDate;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isProductive;
+
+    @Enumerated(EnumType.STRING)
+    private TreeMaturity treeMaturity;
+
     @ManyToOne
-//    @MapsId("fieldId")
     @JoinColumn(name = "field_id")
     private Field field;
 
