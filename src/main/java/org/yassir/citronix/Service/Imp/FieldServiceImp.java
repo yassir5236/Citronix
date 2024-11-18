@@ -47,6 +47,15 @@ public class FieldServiceImp implements IFieldService {
             throw new IllegalArgumentException("A field cannot be  more than 50 % of the farm areas");
         }
 
+        double totalFieldsArea = farm.getFields()
+                .stream()
+                .mapToDouble(Field::getArea)
+                .sum();
+
+        if (totalFieldsArea + field.getArea() > farm.getTotalArea()) {
+            throw new IllegalArgumentException("Global fields area cannot be greater than the total area of the farm");
+        }
+
 
         field.setFarm(farm);
         Field savedField = fieldRepository.save(field);
