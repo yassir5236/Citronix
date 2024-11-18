@@ -22,6 +22,8 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String  name;
+
+
     private double area ;
     private LocalDate creationDate;
 

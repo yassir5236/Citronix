@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public record SaleRequestDTO(
 
-
          LocalDate saleDate,
          String clientName,
          double unitPrice,
