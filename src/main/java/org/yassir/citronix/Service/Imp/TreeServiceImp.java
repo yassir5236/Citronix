@@ -37,6 +37,13 @@ public class TreeServiceImp implements ITreeService {
         Field field =fieldRepository.findById(treeRequestDTO.fieldId())
                 .orElseThrow(()->new IllegalArgumentException("Field not found"));
 
+        int currentTreeCount = field.getTrees().size();
+        double maxTreesAllowed = field.getArea() * 100;
+
+        if (currentTreeCount >= maxTreesAllowed) {
+            throw new IllegalArgumentException("Field cannot contain more than 100 trees per hectare");
+        }
+
         tree.setField(field);
         Tree savedTree = treeRepository.save(tree);
         return treeMapper.toResponseDto(savedTree);
