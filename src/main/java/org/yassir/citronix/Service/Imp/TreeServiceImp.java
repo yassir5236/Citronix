@@ -13,9 +13,12 @@ import org.yassir.citronix.Repository.TreeRepository;
 import org.yassir.citronix.Service.ITreeService;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.*;
+import java.time.*;
 
 @Service
 public class TreeServiceImp implements ITreeService {
@@ -40,6 +43,10 @@ public class TreeServiceImp implements ITreeService {
         Field field =fieldRepository.findById(treeRequestDTO.fieldId())
                 .orElseThrow(()->new IllegalArgumentException("Field not found"));
 
+        Month plantingMonth = tree.getPlantingDate().getMonth();
+        if (plantingMonth.compareTo(Month.MARCH) < 0 || plantingMonth.compareTo(Month.MAY) > 0) {
+            throw new IllegalArgumentException("Planting is only allowed between March and May.");
+        }
 
         int currentTreeCount = field.getTrees().size();
         double maxTreesAllowed = field.getArea() * 100;
