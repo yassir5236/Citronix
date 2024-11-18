@@ -6,6 +6,7 @@ import org.yassir.citronix.Dto.HarvestDetail.HarvestDetailRequestDTO;
 import org.yassir.citronix.Dto.HarvestDetail.HarvestDetailResponseDTO;
 import org.yassir.citronix.Embeddable.CompositeKey2;
 import org.yassir.citronix.Mapper.IHarvestDetailMapper;
+import org.yassir.citronix.Model.Entity.Field;
 import org.yassir.citronix.Model.Entity.Harvest;
 import org.yassir.citronix.Model.Entity.HarvestDetail;
 import org.yassir.citronix.Model.Entity.Tree;
@@ -14,6 +15,7 @@ import org.yassir.citronix.Repository.HarvestRepository;
 import org.yassir.citronix.Repository.TreeRepository;
 import org.yassir.citronix.Service.IHarvestDetailService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +38,32 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
     }
 
 
+//    @Override
+//    public HarvestDetailResponseDTO createHarvestDetail(HarvestDetailRequestDTO harvestDetailRequestDTO) {
+//
+//        HarvestDetail harvestDetail = harvestDetailMapper.toEntity(harvestDetailRequestDTO);
+//
+//        Tree tree = treeRepository.findById(harvestDetailRequestDTO.treeId())
+//                .orElseThrow(() -> new IllegalArgumentException("Tree not found"));
+//
+//        Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
+//                .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
+//
+//        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())){
+//            throw new IllegalArgumentException("Harvest date  cannot before the tree's plantation date");
+//        }
+//
+//        harvestDetail.setHarvest(harvest);
+//        harvestDetail.setTree(tree);
+//
+//        HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
+//        return harvestDetailMapper.toResponseDto(savedHarvestDetail);
+//    }
+
+
+
     @Override
     public HarvestDetailResponseDTO createHarvestDetail(HarvestDetailRequestDTO harvestDetailRequestDTO) {
-
         HarvestDetail harvestDetail = harvestDetailMapper.toEntity(harvestDetailRequestDTO);
 
         Tree tree = treeRepository.findById(harvestDetailRequestDTO.treeId())
@@ -47,16 +72,45 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
 
-        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())){
-            throw new IllegalArgumentException("Harvest date  cannot before the tree's plantation date");
+        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())) {
+            throw new IllegalArgumentException("Harvest date cannot be before the tree's plantation date");
+        }
+
+        if (isHarvestInSameSeasonForField(tree.getField(), harvest)) {
+            throw new IllegalArgumentException("A harvest already exists for this field in the same season.");
         }
 
         harvestDetail.setHarvest(harvest);
         harvestDetail.setTree(tree);
 
         HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
+
         return harvestDetailMapper.toResponseDto(savedHarvestDetail);
     }
+
+    private boolean isHarvestInSameSeasonForField(Field field, Harvest harvest) {
+        List<Tree> trees = treeRepository.findByField(field);
+
+        List<HarvestDetail> harvestDetails = harvestDetailRepository.findByTreeIn(trees);
+
+        for (HarvestDetail detail : harvestDetails) {
+            Harvest existingHarvest = detail.getHarvest();
+
+            if (isSameSeason(existingHarvest, harvest)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isSameSeason(Harvest harvest1, Harvest harvest2) {
+        return harvest1.getSeason() == harvest2.getSeason();
+    }
+
+
+
+
 
 
     @Override
