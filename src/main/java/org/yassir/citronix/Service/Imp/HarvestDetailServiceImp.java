@@ -19,6 +19,7 @@ import org.yassir.citronix.Service.IHarvestDetailService;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,37 +51,8 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
 
-        int treeAge = Period.between(tree.getPlantingDate(), LocalDate.now()).getYears();
-
-        if (!tree.isProductive() ) {
-            throw new IllegalArgumentException("The tree is no longer productive.");
-        }
-
-        double maxProduction;
-        if (treeAge < 3) {
-            maxProduction = 2.5;
-        } else if (treeAge <= 10) {
-            maxProduction = 12;
-        } else {
-            maxProduction = 20;
-        }
-
-        if (harvestDetail.getQuantity() > maxProduction) {
-            throw new IllegalArgumentException("The quantity cannot exceed " + maxProduction + " kg for a tree of this age.");
-        }
 
 
-
-
-//        if (tree.isProductive()) {
-//            if (tree.getTreeMaturity() == TreeMaturity.YOUNG) {
-//                harvestDetail.setQuantity(2.5);
-//            } else if (tree.getTreeMaturity() == TreeMaturity.MATURE) {
-//                harvestDetail.setQuantity(12);
-//            } else {
-//                harvestDetail.setQuantity(20);
-//            }
-//        }
 
         if (harvest.getHarvestDate().isBefore(tree.getPlantingDate())) {
             throw new IllegalArgumentException("Harvest date cannot be before the tree's plantation date");
@@ -95,10 +67,40 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
             throw new IllegalArgumentException("A harvest already exists for this field in the same season.");
         }
 
+
         harvestDetail.setHarvest(harvest);
         harvestDetail.setTree(tree);
 
+
+        int treeAge = Period.between(tree.getPlantingDate(), LocalDate.now()).getYears();
+
+        if (!tree.isProductive()) {
+            throw new IllegalArgumentException("The tree is no longer productive.");
+        }
+
+        double maxProduction;
+        if (treeAge < 3) {
+            maxProduction = 2.5;
+        } else if (treeAge <= 10) {
+            maxProduction = 12;
+        } else {
+            maxProduction = 20;
+        }
+
+        double quantityHarvest =  harvest.getTotalQuantity();
+
+        double quantityDetail = harvestDetail.getQuantity();
+
+        harvest.setTotalQuantity(quantityHarvest+quantityDetail);
+
+
+
+        if (harvestDetail.getQuantity() > maxProduction) {
+            throw new IllegalArgumentException("The quantity cannot exceed " + maxProduction + " kg for a tree of this age.");
+        }
+
         HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
+
 
         return harvestDetailMapper.toResponseDto(savedHarvestDetail);
     }
@@ -112,9 +114,15 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         for (HarvestDetail detail : harvestDetails) {
             Harvest existingHarvest = detail.getHarvest();
 
-            if (isSameSeason(existingHarvest, harvest)) {
-                return true;
+            if (Objects.equals(existingHarvest.getId(), harvest.getId())) {
+                return false;
+            } else {
+                if (isSameSeason(existingHarvest, harvest)) {
+                    return true;
+                }
             }
+
+
         }
 
         return false;
@@ -143,8 +151,15 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         for (HarvestDetail detail : harvestDetails) {
             Harvest existingHarvest = detail.getHarvest();
 
-            if (isSameSeason(existingHarvest, harvest)) {
-                return true;
+            if (Objects.equals(existingHarvest.getId(), harvest.getId())) {
+                return false;
+            } else {
+
+                if (isSameSeason(existingHarvest, harvest)) {
+                    return true;
+                }
+
+
             }
         }
 
