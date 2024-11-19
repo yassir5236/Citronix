@@ -10,6 +10,7 @@ import org.yassir.citronix.Model.Entity.Field;
 import org.yassir.citronix.Model.Entity.Harvest;
 import org.yassir.citronix.Model.Entity.HarvestDetail;
 import org.yassir.citronix.Model.Entity.Tree;
+import org.yassir.citronix.Model.Enum.TreeMaturity;
 import org.yassir.citronix.Repository.HarvestDetailRepository;
 import org.yassir.citronix.Repository.HarvestRepository;
 import org.yassir.citronix.Repository.TreeRepository;
@@ -47,6 +48,18 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
         Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
+
+
+
+        if(tree.isProductive()){
+            if(tree.getTreeMaturity() == TreeMaturity.YOUNG){
+                harvestDetail.setQuantity(2.5);
+            }else if(tree.getTreeMaturity() == TreeMaturity.MATURE){
+                harvestDetail.setQuantity(12);
+            }else{
+                harvestDetail.setQuantity(20);
+            }
+        }
 
         if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())) {
             throw new IllegalArgumentException("Harvest date cannot be before the tree's plantation date");
