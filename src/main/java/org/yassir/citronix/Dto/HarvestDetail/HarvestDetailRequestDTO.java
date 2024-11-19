@@ -8,7 +8,9 @@ import java.time.LocalDate;
 
 public record HarvestDetailRequestDTO(
 
-//        double quantity,
+        @NotNull(message = "quantity is required" )
+        double quantity,
+
         @NotNull(message = "harvestId is required" )
         Long harvestId,
 

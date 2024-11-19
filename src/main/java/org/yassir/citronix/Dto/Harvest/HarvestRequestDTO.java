@@ -7,6 +7,10 @@ import java.time.LocalDate;
 
 public record HarvestRequestDTO(
 
+
+//        @NotNull(message = "HarvestDate is required")
+//        LocalDate harvestDate,
+
         @NotNull(message = "HarvestDate is required")
         LocalDate harvestDate,
 

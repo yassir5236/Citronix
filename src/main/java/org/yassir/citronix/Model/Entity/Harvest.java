@@ -31,6 +31,9 @@ public class Harvest {
     @Enumerated(EnumType.STRING)
     private Season season;
 
+//   @not columnDefinition = "boolean default false"
+//    private double totalQuantity;
+
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 

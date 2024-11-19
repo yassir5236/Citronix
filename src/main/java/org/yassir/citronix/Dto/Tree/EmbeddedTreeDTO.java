@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public record EmbeddedTreeDTO(
          Long id,
-
          LocalDate plantingDate
 ) {
 }

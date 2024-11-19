@@ -17,6 +17,7 @@ import org.yassir.citronix.Repository.TreeRepository;
 import org.yassir.citronix.Service.IHarvestDetailService;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,19 +50,39 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailRequestDTO.harvestId())
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found"));
 
+        int treeAge = Period.between(tree.getPlantingDate(), LocalDate.now()).getYears();
 
-
-        if(tree.isProductive()){
-            if(tree.getTreeMaturity() == TreeMaturity.YOUNG){
-                harvestDetail.setQuantity(2.5);
-            }else if(tree.getTreeMaturity() == TreeMaturity.MATURE){
-                harvestDetail.setQuantity(12);
-            }else{
-                harvestDetail.setQuantity(20);
-            }
+        if (!tree.isProductive() ) {
+            throw new IllegalArgumentException("The tree is no longer productive.");
         }
 
-        if(harvest.getHarvestDate().isBefore(tree.getPlantingDate())) {
+        double maxProduction;
+        if (treeAge < 3) {
+            maxProduction = 2.5;
+        } else if (treeAge <= 10) {
+            maxProduction = 12;
+        } else {
+            maxProduction = 20;
+        }
+
+        if (harvestDetail.getQuantity() > maxProduction) {
+            throw new IllegalArgumentException("The quantity cannot exceed " + maxProduction + " kg for a tree of this age.");
+        }
+
+
+
+
+//        if (tree.isProductive()) {
+//            if (tree.getTreeMaturity() == TreeMaturity.YOUNG) {
+//                harvestDetail.setQuantity(2.5);
+//            } else if (tree.getTreeMaturity() == TreeMaturity.MATURE) {
+//                harvestDetail.setQuantity(12);
+//            } else {
+//                harvestDetail.setQuantity(20);
+//            }
+//        }
+
+        if (harvest.getHarvestDate().isBefore(tree.getPlantingDate())) {
             throw new IllegalArgumentException("Harvest date cannot be before the tree's plantation date");
         }
 
@@ -83,7 +104,6 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
     }
 
 
-
     private boolean isHarvestInSameSeasonForField(Field field, Harvest harvest) {
         List<Tree> trees = treeRepository.findByField(field);
 
@@ -101,7 +121,6 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
     }
 
 
-
     private boolean isSameSeason(Harvest harvest1, Harvest harvest2) {
         if (harvest1.getSeason() == harvest2.getSeason()) {
             int year1 = harvest1.getHarvestDate().getYear();
@@ -109,15 +128,13 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
             if (year1 != year2) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         }
 
         return false;
     }
-
-
 
 
     private boolean isTreeHarvestedInSameSeason(Tree tree, Harvest harvest) {
@@ -133,9 +150,6 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
         return false;
     }
-
-
-
 
 
     @Override
@@ -165,7 +179,7 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
 
     @Override
-    public void deleteHarvestDetail(CompositeKey2 compositeKey2 ) {
+    public void deleteHarvestDetail(CompositeKey2 compositeKey2) {
         if (!harvestDetailRepository.existsById(compositeKey2)) {
             throw new IllegalArgumentException("HarvestDetail not found with ID: " + compositeKey2);
         }
