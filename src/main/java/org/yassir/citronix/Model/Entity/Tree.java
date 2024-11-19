@@ -1,6 +1,7 @@
 package org.yassir.citronix.Model.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class Tree {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "PlantingDate required" )
     private LocalDate plantingDate;
 
     @Column(nullable = false, columnDefinition = "boolean default false")

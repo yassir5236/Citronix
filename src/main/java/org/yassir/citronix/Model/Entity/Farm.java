@@ -36,6 +36,7 @@ public class Farm {
     @DecimalMin(value = "1.0", message = "Farm area must be at least 1 hectare")
     private double totalArea;
 
+    @NotNull(message ="Creation date required")
     private LocalDate created;
 
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)

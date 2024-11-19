@@ -33,6 +33,7 @@ public class Field {
     @DecimalMin(value = "0.1", message = "Field area must be at least 0.1 hectare (1000 m²)")
     private double area;
 
+    @NotNull(message ="Creation date required")
     private LocalDate creationDate;
 
     @ManyToOne
