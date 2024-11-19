@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.yassir.citronix.Model.Enum.TreeMaturity;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,5 +42,10 @@ public class Tree {
     @OneToMany(mappedBy = "tree" , cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
+    @Transient
+    private Double age;
 
+    public int getAge () {
+        return Period.between(plantingDate, LocalDate.now()).getYears();
+    }
 }

@@ -9,6 +9,7 @@ public record SaleResponseDTO(
          LocalDate saleDate,
          String clientName,
          double unitPrice,
+         double wantedQuantity,
          EmbeddedHarvestdDTO harvest
 ) {
 }

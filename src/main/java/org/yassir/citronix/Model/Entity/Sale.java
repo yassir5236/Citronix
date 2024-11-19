@@ -23,18 +23,27 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message ="UnitPrice date required")
+    @NotNull(message = "UnitPrice  required")
     private double unitPrice;
 
-    @NotNull(message ="SaleDate date required")
+    @NotNull(message = "SaleDate  required")
     private LocalDate saleDate;
     @NotBlank(message = "clientName")
     private String clientName;
 
+    @Transient
+    private Double income;
+
+    @NotNull(message = "wanted quantity  required")
+    private Double wantedQuantity;
 
 
     @ManyToOne
     @JoinColumn(name = "harvest_id")
     private Harvest harvest;
 
+
+    public Double getIncome() {
+        return wantedQuantity * unitPrice;
+    }
 }

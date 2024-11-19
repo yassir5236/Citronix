@@ -9,13 +9,16 @@ public record SaleRequestDTO(
          @NotNull(message = "sale date is required")
          LocalDate saleDate,
 
-         @NotNull(message = "clientName date is required")
+         @NotNull(message = "clientName  is required")
          String clientName,
 
-         @NotNull(message = "unitPrice date is required")
+         @NotNull(message = "unitPrice  is required")
          double unitPrice,
 
-         @NotNull(message = "harvestId date is required")
+         @NotNull(message = "Wanted quantity  is required")
+         double wantedQuantity,
+
+         @NotNull(message = "harvestId  is required")
          Long harvestId
 ) {
 }
