@@ -115,4 +115,54 @@ class FarmServiceImpTest {
     }
 
 
+    @Test
+    void testUpdateFarm() {
+        Long farmId = 1L;
+        FarmRequestDTO requestDTO = new FarmRequestDTO("Updated Farm", "Updated Location", 10.0, LocalDate.now());
+
+        Farm existingFarm = Farm.builder()
+                .id(farmId)
+                .name("Test Farm")
+                .location("Test Location")
+                .totalArea(5.0)
+                .created(LocalDate.now())
+                .build();
+
+        Farm updatedFarm = Farm.builder()
+                .id(farmId)
+                .name("Updated Farm")
+                .location("Updated Location")
+                .totalArea(10.0)
+                .created(LocalDate.now())
+                .build();
+
+        FarmResponseDTO responseDTO = new FarmResponseDTO(
+                farmId,
+                "Updated Farm",
+                "Updated Location",
+                10.0,
+                LocalDate.now(),
+                Collections.emptyList()
+        );
+
+        when(farmRepository.findById(farmId)).thenReturn(Optional.of(existingFarm));
+        doNothing().when(farmMapper).updateEntity(requestDTO, existingFarm);
+        when(farmRepository.save(existingFarm)).thenReturn(updatedFarm);
+        when(farmMapper.toResponseDto(updatedFarm)).thenReturn(responseDTO);
+
+        FarmResponseDTO result = farmService.updateFarm(farmId, requestDTO);
+
+        assertEquals(farmId, result.id());
+        assertEquals("Updated Farm", result.name());
+        assertEquals("Updated Location", result.location());
+        assertEquals(10.0, result.totalArea());
+
+        verify(farmRepository, times(1)).findById(farmId);
+        verify(farmMapper, times(1)).updateEntity(requestDTO, existingFarm);
+        verify(farmRepository, times(1)).save(existingFarm);
+        verify(farmMapper, times(1)).toResponseDto(updatedFarm);
+    }
+
+
+
 }
