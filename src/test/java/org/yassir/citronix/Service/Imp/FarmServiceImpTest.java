@@ -209,4 +209,19 @@ class FarmServiceImpTest {
 
 
 
+    @Test
+    void testDeleteFarm() {
+        Long farmId = 1L;
+
+        when(farmRepository.existsById(farmId)).thenReturn(true);
+        doNothing().when(farmRepository).deleteById(farmId);
+
+        farmService.deleteFarm(farmId);
+
+        verify(farmRepository, times(1)).existsById(farmId);
+        verify(farmRepository, times(1)).deleteById(farmId);
+    }
+
+
+
 }
