@@ -12,6 +12,7 @@ import org.yassir.citronix.Repository.FarmRepository;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -80,5 +81,38 @@ class FarmServiceImpTest {
         verify(farmRepository, times(1)).save(farmEntity);
         verify(farmMapper, times(1)).toResponseDto(savedFarm);
     }
+
+    @Test
+    void testGetFarmById() {
+        Long farmId = 1L;
+        Farm farm = Farm.builder()
+                .id(farmId)
+                .name("Test Farm")
+                .location("Test Location")
+                .totalArea(5.0)
+                .created(LocalDate.now())
+                .build();
+
+        FarmResponseDTO responseDTO = new FarmResponseDTO(
+                farmId,
+                "Test Farm",
+                "Test Location",
+                5.0,
+                LocalDate.now(),
+                Collections.emptyList()
+        );
+
+        when(farmRepository.findById(farmId)).thenReturn(Optional.of(farm));
+        when(farmMapper.toResponseDto(farm)).thenReturn(responseDTO);
+
+        FarmResponseDTO result = farmService.getFarmById(farmId);
+
+
+        assertEquals(farmId, result.id());
+        assertEquals("Test Farm", result.name());
+        verify(farmRepository, times(1)).findById(farmId);
+        verify(farmMapper, times(1)).toResponseDto(farm);
+    }
+
 
 }
