@@ -12,6 +12,7 @@ import org.yassir.citronix.Repository.FarmRepository;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -162,6 +163,49 @@ class FarmServiceImpTest {
         verify(farmRepository, times(1)).save(existingFarm);
         verify(farmMapper, times(1)).toResponseDto(updatedFarm);
     }
+
+
+
+    @Test
+    void testGetAllFarms() {
+        Farm farm1 = Farm.builder()
+                .id(1L)
+                .name("Farm 1")
+                .location("Location 1")
+                .totalArea(5.0)
+                .created(LocalDate.now())
+                .build();
+
+        Farm farm2 = Farm.builder()
+                .id(2L)
+                .name("Farm 2")
+                .location("Location 2")
+                .totalArea(10.0)
+                .created(LocalDate.now())
+                .build();
+
+        List<Farm> farms = List.of(farm1, farm2);
+
+        FarmResponseDTO responseDTO1 = new FarmResponseDTO(1L, "Farm 1", "Location 1", 5.0, LocalDate.now(), Collections.emptyList());
+        FarmResponseDTO responseDTO2 = new FarmResponseDTO(2L, "Farm 2", "Location 2", 10.0, LocalDate.now(), Collections.emptyList());
+
+        List<FarmResponseDTO> responseDTOs = List.of(responseDTO1, responseDTO2);
+
+        when(farmRepository.findAll()).thenReturn(farms);
+        when(farmMapper.toResponseDto(farm1)).thenReturn(responseDTO1);
+        when(farmMapper.toResponseDto(farm2)).thenReturn(responseDTO2);
+
+        List<FarmResponseDTO> result = farmService.getAllFarms();
+
+        assertEquals(2, result.size());
+        assertEquals("Farm 1", result.get(0).name());
+        assertEquals("Farm 2", result.get(1).name());
+
+        verify(farmRepository, times(1)).findAll();
+        verify(farmMapper, times(1)).toResponseDto(farm1);
+        verify(farmMapper, times(1)).toResponseDto(farm2);
+    }
+
 
 
 
