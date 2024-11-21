@@ -2,6 +2,7 @@ package org.yassir.citronix.Service;
 
 import org.yassir.citronix.Dto.Harvest.HarvestRequestDTO;
 import org.yassir.citronix.Dto.Harvest.HarvestResponseDTO;
+import org.yassir.citronix.Dto.Harvest.HarvestTotalIncomeDTO;
 
 import java.util.List;
 
@@ -15,4 +16,7 @@ public interface IHarvestService {
     List<HarvestResponseDTO> getAllHarvests();
 
     void deleteHarvest(Long harvestId);
-}
+
+     HarvestTotalIncomeDTO getHarvestTotalIncome(Long harvestId);
+
+    }

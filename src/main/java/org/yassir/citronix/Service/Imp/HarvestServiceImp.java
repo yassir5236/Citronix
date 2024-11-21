@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yassir.citronix.Dto.Harvest.HarvestRequestDTO;
 import org.yassir.citronix.Dto.Harvest.HarvestResponseDTO;
+import org.yassir.citronix.Dto.Harvest.HarvestTotalIncomeDTO;
 import org.yassir.citronix.Mapper.IHarvestMapper;
 import org.yassir.citronix.Model.Entity.Harvest;
+import org.yassir.citronix.Model.Entity.Sale;
 import org.yassir.citronix.Model.Entity.Tree;
 import org.yassir.citronix.Repository.HarvestRepository;
+import org.yassir.citronix.Repository.SaleRepository;
 import org.yassir.citronix.Service.IHarvestService;
 
 import java.util.ArrayList;
@@ -20,13 +23,14 @@ public class HarvestServiceImp implements IHarvestService {
 
     private final HarvestRepository harvestRepository;
     private final IHarvestMapper harvestMapper;
+    private final SaleRepository saleRepository;
 
 
     @Autowired
-    public HarvestServiceImp(HarvestRepository harvestRepository, IHarvestMapper harvestMapper) {
+    public HarvestServiceImp(HarvestRepository harvestRepository, IHarvestMapper harvestMapper, SaleRepository saleRepository) {
         this.harvestRepository = harvestRepository;
         this.harvestMapper = harvestMapper;
-
+        this.saleRepository = saleRepository;
     }
 
 
@@ -71,5 +75,25 @@ public class HarvestServiceImp implements IHarvestService {
         }
         harvestRepository.deleteById(harvestId);
     }
+
+
+
+    @Override
+    public HarvestTotalIncomeDTO getHarvestTotalIncome(Long harvestId) {
+        Harvest harvest = harvestRepository.findById(harvestId)
+                .orElseThrow(() -> new RuntimeException("Harvest not found with ID: " + harvestId));
+
+        List<Sale> sales = saleRepository.findSalesByHarvest(harvest);
+        if (sales.isEmpty()) {
+            throw new RuntimeException("No sales associated with this harvest.");
+        }
+
+        double totalIncome = sales.stream()
+                .mapToDouble(Sale::getIncome)
+                .sum();
+
+        return harvestMapper.toTotalIncomeDTO(harvest, sales, totalIncome);
+    }
+
 
 }

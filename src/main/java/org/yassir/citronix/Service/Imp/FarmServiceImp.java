@@ -1,11 +1,13 @@
 package org.yassir.citronix.Service.Imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.yassir.citronix.Dto.Farm.FarmRequestDTO;
 import org.yassir.citronix.Dto.Farm.FarmResponseDTO;
 import org.yassir.citronix.Mapper.IFarmMapper;
 import org.yassir.citronix.Model.Entity.Farm;
+import org.yassir.citronix.Model.Entity.FarmSpecification;
 import org.yassir.citronix.Repository.FarmRepository;
 import org.yassir.citronix.Service.IFarmService;
 
@@ -71,6 +73,16 @@ public class FarmServiceImp implements IFarmService {
             throw new IllegalArgumentException("Farm not found with ID: " + farmId);
         }
         farmRepository.deleteById(farmId);
+    }
+
+
+    @Override
+    public List<FarmResponseDTO> searchFarms(String name, String location, Double minArea) {
+        Specification<Farm> spec = FarmSpecification.searchFarms(name, location, minArea);
+        List<Farm> farms = farmRepository.findAll(spec);
+        return farms.stream()
+                .map(farmMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 
 }

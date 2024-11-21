@@ -29,11 +29,12 @@ public class Farm {
     @NotBlank(message = "Farm name cannot be empty")
     private String name;
 
-    @NotBlank(message = "Farm location cannot be empty")
+    @NotBlank(message = "Farm location cannot be empty" )
+    @Column(unique = true)
     private String location;
 
     @Min(value = 0, message = "Total area cannot be negative")
-    @DecimalMin(value = "1.0", message = "Farm area must be at least 1 hectare")
+    @DecimalMin(value = "0.2", message = "Farm area must be at least 1 hectare")
     private double totalArea;
 
     @NotNull(message ="Creation date required")

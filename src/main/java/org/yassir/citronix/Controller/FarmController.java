@@ -55,6 +55,17 @@ public class FarmController {
     }
 
 
+    @GetMapping("/search")
+    public ResponseEntity<List<FarmResponseDTO>> searchFarms(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Double minArea) {
+        List<FarmResponseDTO> farms = farmService.searchFarms(name, location, minArea);
+        return ResponseEntity.ok(farms);
+    }
+
+
+
 
 
 }

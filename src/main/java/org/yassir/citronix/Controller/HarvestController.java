@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yassir.citronix.Dto.Harvest.HarvestRequestDTO;
 import org.yassir.citronix.Dto.Harvest.HarvestResponseDTO;
+import org.yassir.citronix.Dto.Harvest.HarvestTotalIncomeDTO;
 import org.yassir.citronix.Service.IHarvestService;
 
 import java.util.List;
@@ -54,6 +55,12 @@ public class HarvestController {
         return ResponseEntity.ok(harvests);
     }
 
+
+    @GetMapping("/{id}/totalRevenue")
+    public ResponseEntity<HarvestTotalIncomeDTO> getHarvestIncome(@PathVariable("id") Long harvestId) {
+        HarvestTotalIncomeDTO totalIncomeDTO = harvestService.getHarvestTotalIncome(harvestId);
+        return ResponseEntity.ok(totalIncomeDTO);
+    }
 
 
 

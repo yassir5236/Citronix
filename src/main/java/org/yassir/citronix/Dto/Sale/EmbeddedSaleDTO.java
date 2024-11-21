@@ -6,6 +6,7 @@ public record EmbeddedSaleDTO(
          Long id,
          LocalDate saleDate,
          String clientName,
+         double income,
          double unitPrice
 ) {
 }

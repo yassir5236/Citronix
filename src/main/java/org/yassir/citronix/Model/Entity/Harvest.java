@@ -34,6 +34,9 @@ public class Harvest {
     @Column(nullable = false, columnDefinition = "float default 0.0")
     private double totalQuantity;
 
+    @Transient
+    private double totalIncome;
+
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 

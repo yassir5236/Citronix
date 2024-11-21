@@ -15,4 +15,7 @@ public interface IFarmService {
     List<FarmResponseDTO> getAllFarms();
 
     void deleteFarm(Long farmId);
-}
+
+     List<FarmResponseDTO> searchFarms(String name, String location, Double minArea);
+
+    }
