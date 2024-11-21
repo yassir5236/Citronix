@@ -2,10 +2,7 @@ package org.yassir.citronix.Model.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.engine.internal.Cascade;
 import org.yassir.citronix.Model.Enum.Season;
 
@@ -18,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 
+@Builder
 @Entity
 @Table(name = "Harvests")
 public class Harvest {

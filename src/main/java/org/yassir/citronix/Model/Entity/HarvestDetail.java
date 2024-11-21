@@ -1,10 +1,7 @@
 package org.yassir.citronix.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.yassir.citronix.Embeddable.CompositeKey2;
 
 @AllArgsConstructor
@@ -12,6 +9,7 @@ import org.yassir.citronix.Embeddable.CompositeKey2;
 @Getter
 @Setter
 
+@Builder
 @Entity
 @Table(name = "HarvestDetails")
 public class HarvestDetail {
