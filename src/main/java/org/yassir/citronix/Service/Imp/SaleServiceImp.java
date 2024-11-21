@@ -40,6 +40,18 @@ public class SaleServiceImp implements ISaleService {
         Harvest harvest =harvestRepository.findById(saleRequestDTO.harvestId())
                 .orElseThrow(() -> new RuntimeException("Harvest not found"));
 
+        if (harvest.getHarvestDate().isBefore(sale.getSaleDate())) {
+            throw new IllegalArgumentException("Sale date cannot be before the harvest's  date");
+        }
+
+        if(saleRequestDTO.wantedQuantity() > harvest.getTotalQuantity()){
+            throw new IllegalArgumentException("Wanted quantity cannot be greater than harvest's total quantity");
+        }
+
+        harvest.setTotalQuantity(harvest.getTotalQuantity() - saleRequestDTO.wantedQuantity());
+
+        System.out.println(sale.getIncome());
+
         sale.setHarvest(harvest);
         Sale savedSale = saleRepository.save(sale);
         return saleMapper.toResponseDto(savedSale);
@@ -80,5 +92,7 @@ public class SaleServiceImp implements ISaleService {
         }
         saleRepository.deleteById(saleId);
     }
+
+
 
 }

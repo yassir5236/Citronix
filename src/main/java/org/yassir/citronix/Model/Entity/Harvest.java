@@ -1,6 +1,7 @@
 package org.yassir.citronix.Model.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,13 @@ public class Harvest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message ="HarvestDate date required")
     private LocalDate harvestDate;
     @Enumerated(EnumType.STRING)
     private Season season;
+
+    @Column(nullable = false, columnDefinition = "float default 0.0")
+    private double totalQuantity;
 
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();

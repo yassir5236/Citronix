@@ -6,8 +6,10 @@ import java.time.LocalDate;
 
 public record SaleResponseDTO(
          Long id,
-
-         LocalDate plantingDate,
+         LocalDate saleDate,
+         String clientName,
+         double unitPrice,
+         double wantedQuantity,
          EmbeddedHarvestdDTO harvest
 ) {
 }

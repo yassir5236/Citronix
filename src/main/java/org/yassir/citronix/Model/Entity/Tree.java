@@ -1,12 +1,15 @@
 package org.yassir.citronix.Model.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yassir.citronix.Model.Enum.TreeMaturity;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +26,26 @@ public class Tree {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "PlantingDate required" )
     private LocalDate plantingDate;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isProductive;
+
+    @Enumerated(EnumType.STRING)
+    private TreeMaturity treeMaturity;
+
     @ManyToOne
-//    @MapsId("fieldId")
     @JoinColumn(name = "field_id")
     private Field field;
 
-    @OneToMany(mappedBy = "tree")
+    @OneToMany(mappedBy = "tree" , cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
+    @Transient
+    private Double age;
 
+    public int getAge () {
+        return Period.between(plantingDate, LocalDate.now()).getYears();
+    }
 }

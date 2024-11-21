@@ -6,15 +6,16 @@ import org.yassir.citronix.Dto.Harvest.HarvestRequestDTO;
 import org.yassir.citronix.Dto.Harvest.HarvestResponseDTO;
 import org.yassir.citronix.Mapper.IHarvestMapper;
 import org.yassir.citronix.Model.Entity.Harvest;
+import org.yassir.citronix.Model.Entity.Tree;
 import org.yassir.citronix.Repository.HarvestRepository;
 import org.yassir.citronix.Service.IHarvestService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class HarvestServiceImp implements IHarvestService {
-
 
 
     private final HarvestRepository harvestRepository;
@@ -27,7 +28,6 @@ public class HarvestServiceImp implements IHarvestService {
         this.harvestMapper = harvestMapper;
 
     }
-
 
 
     @Override
@@ -62,7 +62,6 @@ public class HarvestServiceImp implements IHarvestService {
                 .map(harvestMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
-
 
 
     @Override

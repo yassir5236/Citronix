@@ -11,8 +11,11 @@ import org.yassir.citronix.Repository.FarmRepository;
 import org.yassir.citronix.Repository.FieldRepository;
 import org.yassir.citronix.Service.IFieldService;
 
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.compare;
 
 @Service
 public class FieldServiceImp implements IFieldService {
@@ -38,6 +41,29 @@ public class FieldServiceImp implements IFieldService {
 
         Farm farm = farmRepository.findById(fieldRequestDTO.farmId())
                 .orElseThrow(() -> new IllegalArgumentException("Farm not found"));
+
+        if(field.getCreationDate().isBefore(farm.getCreated())){
+            throw new IllegalArgumentException("Field creation date cannot before the farm's creation date");
+        }
+
+        if(farm.getFields().size()>=10){
+            throw new IllegalArgumentException("A farm cannot have more than 10 fields");
+        }
+
+        if(field.getArea()> farm.getTotalArea()/2){
+            throw new IllegalArgumentException("A field cannot be  more than 50 % of the farm areas");
+        }
+
+        double totalFieldsArea = farm.getFields()
+                .stream()
+                .mapToDouble(Field::getArea)
+                .sum();
+
+        if (totalFieldsArea + field.getArea() > farm.getTotalArea()) {
+            throw new IllegalArgumentException("Global fields area cannot be greater than the total area of the farm");
+        }
+
+
 
         field.setFarm(farm);
         Field savedField = fieldRepository.save(field);
