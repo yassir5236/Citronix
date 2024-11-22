@@ -50,7 +50,7 @@ public class FieldServiceImp implements IFieldService {
             throw new IllegalArgumentException("A farm cannot have more than 10 fields");
         }
 
-        if(field.getArea()> farm.getTotalArea()/2){
+        if(field.getArea() > farm.getTotalArea()/2){
             throw new IllegalArgumentException("A field cannot be  more than 50 % of the farm areas");
         }
 

@@ -78,14 +78,14 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
             throw new IllegalArgumentException("The tree is no longer productive.");
         }
 
-        double maxProduction;
-        if (treeAge < 3) {
-            maxProduction = 2.5;
-        } else if (treeAge <= 10) {
-            maxProduction = 12;
-        } else {
-            maxProduction = 20;
-        }
+//        double maxProduction;
+//        if (treeAge < 3) {
+//            maxProduction = 2.5;
+//        } else if (treeAge <= 10) {
+//            maxProduction = 12;
+//        } else {
+//            maxProduction = 20;
+//        }
 
         double quantityHarvest =  harvest.getTotalQuantity();
 
@@ -95,9 +95,9 @@ public class HarvestDetailServiceImp implements IHarvestDetailService {
 
 
 
-        if (harvestDetail.getQuantity() > maxProduction) {
-            throw new IllegalArgumentException("The quantity cannot exceed " + maxProduction + " kg for a tree of this age.");
-        }
+//        if (harvestDetail.getQuantity() > maxProduction) {
+//            throw new IllegalArgumentException("The quantity cannot exceed " + maxProduction + " kg for a tree of this age.");
+//        }
 
         HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
 

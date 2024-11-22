@@ -15,7 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-
 @Entity
 @Table(name = "Farms")
 public class Farm {
@@ -27,12 +26,11 @@ public class Farm {
     @NotBlank(message = "Farm name cannot be empty")
     private String name;
 
-    @NotBlank(message = "Farm location cannot be empty" )
-    @Column(unique = true)
+    @NotBlank(message = "Farm location cannot be empty")
     private String location;
 
     @Min(value = 0, message = "Total area cannot be negative")
-    @DecimalMin(value = "0.2", message = "Farm area must be at least 1 hectare")
+    @DecimalMin(value = "0.2", message = "Farm area must be at least 0.2 hectare")
     private double totalArea;
 
     @NotNull(message ="Creation date required")
