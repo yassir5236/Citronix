@@ -31,7 +31,7 @@ public class Farm {
     private String location;
 
     @Min(value = 0, message = "Total area cannot be negative")
-    @DecimalMin(value = "1.0", message = "Farm area must be at least 1 hectare")
+    @DecimalMin(value = "0.2", message = "Farm area must be at least 0.2 hectare")
     private double totalArea;
 
     @NotNull(message ="Creation date required")
