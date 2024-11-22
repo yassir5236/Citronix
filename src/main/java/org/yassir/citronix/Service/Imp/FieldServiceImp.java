@@ -83,7 +83,35 @@ public class FieldServiceImp implements IFieldService {
         Field existingField = fieldRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Field not found with ID: " + id));
 
-        fieldMapper.updateEntity(fieldRequestDTO, existingField);
+        Farm farm = farmRepository.findById(fieldRequestDTO.farmId())
+                .orElseThrow(() -> new IllegalArgumentException("Farm not found"));
+
+
+        if(fieldRequestDTO.creationDate().isBefore(farm.getCreated())){
+            throw new IllegalArgumentException("Field creation date cannot before the farm's creation date");
+        }
+
+
+
+        if(fieldRequestDTO.area() > farm.getTotalArea()/2){
+            throw new IllegalArgumentException("A existingField cannot be  more than 50 % of the farm areas");
+        }
+
+        double totalFieldsArea = farm.getFields()
+                .stream()
+                .mapToDouble(Field::getArea)
+                .sum();
+
+        if (totalFieldsArea + fieldRequestDTO.area() > farm.getTotalArea()) {
+            throw new IllegalArgumentException("Global existingFields area cannot be greater than the total area of the farm");
+        }
+
+
+
+        existingField.setFarm(farm);
+        existingField.setArea(fieldRequestDTO.area());
+        existingField.setName(fieldRequestDTO.name());
+
         Field updatedField = fieldRepository.save(existingField);
         return fieldMapper.toResponseDto(updatedField);
     }
