@@ -97,7 +97,48 @@ public class TreeServiceImp implements ITreeService {
         Tree existingTree = treeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Tree not found with ID: " + id));
 
-        treeMapper.updateEntity(treeRequestDTO, existingTree);
+        Field field = fieldRepository.findById(treeRequestDTO.fieldId())
+                .orElseThrow(()->new IllegalArgumentException("Field not found"));
+
+
+
+        if(treeRequestDTO.plantingDate().isBefore(field.getCreationDate())){
+            throw new IllegalArgumentException("Tree planting date cannot before the field's creation date");
+        }
+
+        Month plantingMonth = treeRequestDTO.plantingDate().getMonth();
+        if (plantingMonth.compareTo(Month.MARCH) < 0 || plantingMonth.compareTo(Month.MAY) > 0) {
+            throw new IllegalArgumentException("Planting is only allowed between March and May.");
+        }
+
+        int currentTreeCount = field.getTrees().size();
+        double maxTreesAllowed = field.getArea() * 100;
+
+        if (currentTreeCount >= maxTreesAllowed) {
+            throw new IllegalArgumentException("Field cannot contain more than 100 trees per hectare");
+        }
+
+        int treeAge = Period.between(treeRequestDTO.plantingDate(), LocalDate.now()).getYears();
+
+        System.out.println(treeAge);
+        if (treeAge < 3) {
+            existingTree.setTreeMaturity(TreeMaturity.YOUNG);
+            existingTree.setProductive(true);
+        } else if (treeAge <= 10) {
+            existingTree.setTreeMaturity(TreeMaturity.MATURE);
+            existingTree.setProductive(true);
+        } else if (treeAge <= 20) {
+            existingTree.setTreeMaturity(TreeMaturity.OLD);
+            existingTree.setProductive(true);
+        }else {
+            existingTree.setTreeMaturity(TreeMaturity.OLD);
+            existingTree.setProductive(false);
+        }
+
+
+        existingTree.setField(field);
+        existingTree.setPlantingDate(treeRequestDTO.plantingDate());
+
         Tree updatedTree = treeRepository.save(existingTree);
         return treeMapper.toResponseDto(updatedTree);
     }
