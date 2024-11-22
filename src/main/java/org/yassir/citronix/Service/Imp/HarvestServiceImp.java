@@ -9,10 +9,12 @@ import org.yassir.citronix.Mapper.IHarvestMapper;
 import org.yassir.citronix.Model.Entity.Harvest;
 import org.yassir.citronix.Model.Entity.Sale;
 import org.yassir.citronix.Model.Entity.Tree;
+import org.yassir.citronix.Model.Enum.Season;
 import org.yassir.citronix.Repository.HarvestRepository;
 import org.yassir.citronix.Repository.SaleRepository;
 import org.yassir.citronix.Service.IHarvestService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,10 +39,33 @@ public class HarvestServiceImp implements IHarvestService {
     @Override
     public HarvestResponseDTO createHarvest(HarvestRequestDTO harvestRequestDTO) {
         Harvest harvest = harvestMapper.toEntity(harvestRequestDTO);
+
+        if (!isSameSeason(harvestRequestDTO.harvestDate(), harvestRequestDTO.season())){
+            throw new IllegalArgumentException("The creation date is not in the same season.");
+        }
+
+
         Harvest savedHarvest = harvestRepository.save(harvest);
         return harvestMapper.toResponseDto(savedHarvest);
     }
 
+
+    public boolean isSameSeason(LocalDate creationDate, Season season) {
+        int month = creationDate.getMonthValue();
+
+        switch (season) {
+            case SPRING:
+                return month >= 3 && month <= 5;
+            case SUMMER:
+                return month >= 6 && month <= 8;
+            case AUTUMN:
+                return month >= 9 && month <= 11;
+            case WINTER:
+                return month == 12 || month == 1 || month == 2;
+            default:
+                throw new IllegalArgumentException("Unknown season: " + season);
+        }
+    }
 
     @Override
     public HarvestResponseDTO getHarvestById(Long harvestId) {
@@ -54,7 +79,13 @@ public class HarvestServiceImp implements IHarvestService {
         Harvest existingHarvest = harvestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Harvest not found with ID: " + id));
 
-        harvestMapper.updateEntity(harvestRequestDTO, existingHarvest);
+        if (!isSameSeason(harvestRequestDTO.harvestDate(), harvestRequestDTO.season())){
+            throw new IllegalArgumentException("The creation date is not in the same season.");
+        }
+
+        existingHarvest.setSeason(harvestRequestDTO.season());
+        existingHarvest.setHarvestDate(harvestRequestDTO.harvestDate());
+
         Harvest updatedHarvest = harvestRepository.save(existingHarvest);
         return harvestMapper.toResponseDto(updatedHarvest);
     }
